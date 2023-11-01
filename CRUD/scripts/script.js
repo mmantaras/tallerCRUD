@@ -15,11 +15,16 @@ const btnSendChanges = document.getElementById("btnSendChanges");
 const alertError = document.getElementById("alert-error");
 const dataModal = document.getElementById("dataModal");
 
+// Mantén una referencia a la lista original de registros
+let registrosOriginales = [];
+
 // Función para cargar la lista de registros desde el servidor
 function cargarRegistros() {
   fetch(apiURL)
     .then((response) => response.json())
     .then((data) => {
+      registrosOriginales = data; // Actualiza la lista original de registros
+
       listaRegistros.innerHTML = "";
 
       data.forEach((registro) => {
@@ -33,14 +38,20 @@ function cargarRegistros() {
 
 // Función para buscar un registro por ID
 function buscarRegistroPorID(id) {
-  fetch(`${apiURL}/${id}`)
-    .then((response) => response.json())
-    .then((data) => {
-      // Muestra el registro en la interfaz
-      // Puedes utilizar el resultado para llenar los campos de nombre y apellido
-    })
-    .catch((error) => alertError.style.display = "block");
+  // Filtra la lista de registros originales para mostrar solo el registro correspondiente
+  const registroEncontrado = registrosOriginales.find((registro) => registro.id == id);
+  listaRegistros.innerHTML = "";
+
+  if (registroEncontrado) {
+    const listItem = document.createElement("li");
+    listItem.textContent = `ID: ${registroEncontrado.id}, Nombre: ${registroEncontrado.name}, Apellido: ${registroEncontrado.lastname}`;
+    listaRegistros.appendChild(listItem);
+  } else {
+    alert("No se encontró un registro con ese ID.");
+  }
 }
+
+
 
 // Función para agregar un registro
 function agregarRegistro(nombre, apellido) {
@@ -110,6 +121,9 @@ btnGet1.addEventListener("click", () => {
   }
 });
 
+// Carga inicial de registros
+cargarRegistros();
+
 // Evento al hacer clic en el botón de agregar
 btnPost.addEventListener("click", () => {
   const nombre = inputPostNombre.value;
@@ -145,5 +159,3 @@ btnDelete.addEventListener("click", () => {
 
 // Otros eventos y funciones pueden agregarse aquí
 
-// Carga inicial de registros
-cargarRegistros();
