@@ -22,6 +22,8 @@ function modificarRegistroPorId(id, newData) {
       });
   }
   
+  const idAActualizar = id;
+
   const newData = {
     name: 'Nuevo Nombre',
     lastname: 'Nuevo Apellido',
