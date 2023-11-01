@@ -1,5 +1,19 @@
 const apiURL = "https://SECRET.mockapi.io/users";
-const listaRegistros = document.getElementById("listaRegistros"); // El elemento donde mostrarás los registros
+const listaRegistros = document.getElementById("results");
+const inputGet1Id = document.getElementById("inputGet1Id");
+const inputPostNombre = document.getElementById("inputPostNombre");
+const inputPostApellido = document.getElementById("inputPostApellido");
+const inputPutId = document.getElementById("inputPutId");
+const inputPutNombre = document.getElementById("inputPutNombre");
+const inputPutApellido = document.getElementById("inputPutApellido");
+const inputDelete = document.getElementById("inputDelete");
+const btnGet1 = document.getElementById("btnGet1");
+const btnPost = document.getElementById("btnPost");
+const btnPut = document.getElementById("btnPut");
+const btnDelete = document.getElementById("btnDelete");
+const btnSendChanges = document.getElementById("btnSendChanges");
+const alertError = document.getElementById("alert-error");
+const dataModal = document.getElementById("dataModal");
 
 // Función para cargar la lista de registros desde el servidor
 function cargarRegistros() {
@@ -8,14 +22,13 @@ function cargarRegistros() {
     .then((data) => {
       listaRegistros.innerHTML = "";
 
-      // Muestra los registros en la interfaz
       data.forEach((registro) => {
         const listItem = document.createElement("li");
         listItem.textContent = `ID: ${registro.id}, Nombre: ${registro.name}, Apellido: ${registro.lastname}`;
         listaRegistros.appendChild(listItem);
       });
     })
-    .catch((error) => alert("Error al cargar registros: " + error));
+    .catch((error) => alertError.style.display = "block");
 }
 
 // Función para buscar un registro por ID
@@ -23,8 +36,10 @@ function buscarRegistroPorID(id) {
   fetch(`${apiURL}/${id}`)
     .then((response) => response.json())
     .then((data) => {
+      // Muestra el registro en la interfaz
+      // Puedes utilizar el resultado para llenar los campos de nombre y apellido
     })
-    .catch((error) => alert("Error al buscar registro por ID: " + error));
+    .catch((error) => alertError.style.display = "block");
 }
 
 // Función para agregar un registro
@@ -45,7 +60,7 @@ function agregarRegistro(nombre, apellido) {
     .then((data) => {
       cargarRegistros();
     })
-    .catch((error) => alert("Error al agregar registro: " + error));
+    .catch((error) => alertError.style.display = "block");
 }
 
 // Función para modificar un registro por ID
@@ -65,8 +80,9 @@ function modificarRegistroPorID(id, nombre, apellido) {
     .then((response) => response.json())
     .then((data) => {
       cargarRegistros();
+      dataModal.style.display = "none";
     })
-    .catch((error) => alert("Error al modificar registro por ID: " + error));
+    .catch((error) => alertError.style.display = "block");
 }
 
 // Función para eliminar un registro por ID
@@ -81,12 +97,12 @@ function eliminarRegistroPorID(id) {
         alert("No se pudo eliminar el registro.");
       }
     })
-    .catch((error) => alert("Error al eliminar registro por ID: " + error));
+    .catch((error) => alertError.style.display = "block");
 }
 
 // Evento al hacer clic en el botón de búsqueda
-document.getElementById("buscarBtn").addEventListener("click", () => {
-  const id = document.getElementById("idInput").value;
+btnGet1.addEventListener("click", () => {
+  const id = inputGet1Id.value;
   if (id) {
     buscarRegistroPorID(id);
   } else {
@@ -95,9 +111,9 @@ document.getElementById("buscarBtn").addEventListener("click", () => {
 });
 
 // Evento al hacer clic en el botón de agregar
-document.getElementById("agregarBtn").addEventListener("click", () => {
-  const nombre = document.getElementById("nombreInput").value;
-  const apellido = document.getElementById("apellidoInput").value;
+btnPost.addEventListener("click", () => {
+  const nombre = inputPostNombre.value;
+  const apellido = inputPostApellido.value;
   if (nombre && apellido) {
     agregarRegistro(nombre, apellido);
   } else {
@@ -106,10 +122,10 @@ document.getElementById("agregarBtn").addEventListener("click", () => {
 });
 
 // Evento al hacer clic en el botón de modificar
-document.getElementById("modificarBtn").addEventListener("click", () => {
-  const id = document.getElementById("idInput").value;
-  const nombre = document.getElementById("nombreInput").value;
-  const apellido = document.getElementById("apellidoInput").value;
+btnPut.addEventListener("click", () => {
+  const id = inputPutId.value;
+  const nombre = inputPutNombre.value;
+  const apellido = inputPutApellido.value;
   if (id && nombre && apellido) {
     modificarRegistroPorID(id, nombre, apellido);
   } else {
@@ -118,8 +134,8 @@ document.getElementById("modificarBtn").addEventListener("click", () => {
 });
 
 // Evento al hacer clic en el botón de borrar
-document.getElementById("borrarBtn").addEventListener("click", () => {
-  const id = document.getElementById("idInput").value;
+btnDelete.addEventListener("click", () => {
+  const id = inputDelete.value;
   if (id) {
     eliminarRegistroPorID(id);
   } else {
@@ -127,4 +143,7 @@ document.getElementById("borrarBtn").addEventListener("click", () => {
   }
 });
 
+// Otros eventos y funciones pueden agregarse aquí
+
+// Carga inicial de registros
 cargarRegistros();
