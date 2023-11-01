@@ -139,12 +139,21 @@ btnPost.addEventListener("click", () => {
 // Evento al hacer clic en el botón de modificar
 btnPut.addEventListener("click", () => {
   const id = inputPutId.value;
-  const nombre = inputPutNombre.value;
-  const apellido = inputPutApellido.value;
-  if (id && nombre && apellido) {
-    modificarRegistroPorID(id, nombre, apellido);
+  if (id) {
+    const registroEncontrado = registrosOriginales.find((registro) => registro.id == id);
+    if (registroEncontrado) {
+      // Llenar los campos del modal con los datos del registro
+      inputPutNombre.value = registroEncontrado.name;
+      inputPutApellido.value = registroEncontrado.lastname;
+      // Habilitar el botón de "Guardar" en el modal
+      btnSendChanges.disabled = false;
+      // Mostrar el modal
+      $('#dataModal').modal('show'); // Utiliza jQuery para abrir el modal
+    } else {
+      alert("No se encontró un registro con ese ID.");
+    }
   } else {
-    alert("Por favor, complete todos los campos.");
+    alert("Por favor, complete el campo 'ID del registro a modificar'.");
   }
 });
 
@@ -199,4 +208,37 @@ inputDelete.addEventListener("input", function() {
 })
 
 // Otros eventos y funciones pueden agregarse aquí
+// Evento al hacer clic en el botón "Guardar" dentro del modal
+btnSendChanges.addEventListener("click", () => {
+  const id = inputPutId.value;
+  const nombre = inputPutNombre.value;
+  const apellido = inputPutApellido.value;
+  if (id && nombre && apellido) {
+    modificarRegistroEnModal(id, nombre, apellido);
+  } else {
+    alert("Por favor, complete todos los campos.");
+  }
+});
+
+// Función para modificar un registro por ID desde el modal
+function modificarRegistroEnModal(id, nombre, apellido) {
+  const registroModificado = {
+    name: nombre,
+    lastname: apellido,
+  };
+
+  fetch(`${apiURL}/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(registroModificado),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      cargarRegistros();
+      $('#dataModal').modal('hide'); // Cierra el modal después de guardar
+    })
+    .catch((error) => alertError.style.display = "block");
+}
 
