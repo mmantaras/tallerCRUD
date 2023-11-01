@@ -1,4 +1,4 @@
-const apiURL = "https://SECRET.mockapi.io/users";
+const apiURL = "https://65423580f0b8287df1ffb219.mockapi.io/users";
 const listaRegistros = document.getElementById("results");
 const inputGet1Id = document.getElementById("inputGet1Id");
 const inputPostNombre = document.getElementById("inputPostNombre");
